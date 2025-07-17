@@ -1,100 +1,229 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PöbelSlotMaschine</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-    body {
-      font-family: 'Press Start 2P', monospace;
-      background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
-      color: #00ffcc;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      overflow: hidden;
-    }
-    h1 {
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
-      text-shadow: 0 0 5px #00ffcc, 0 0 10px #00ffcc;
-    }
-    .subtitle {
-      font-size: 0.6rem;
-      margin-bottom: 2rem;
-      color: #00ffee;
-    }
-    .slot-container {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 2rem;
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PöbelSlotMaschine</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@600&display=swap');
+
+  :root {
+    --color-primary: #0ff; /* cyan */
+    --bg-color: #000;
+    --slot-bg: #022;
+    --slot-border: #0ff;
+    --text-color: var(--color-primary);
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Source Code Pro', monospace;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    user-select: none;
+  }
+
+  h1 {
+    font-weight: 600;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    letter-spacing: 0.15em;
+    color: var(--color-primary);
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  #slot-machine {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .slot {
+    background: var(--slot-bg);
+    border: 3px solid var(--slot-border);
+    border-radius: 6px;
+    width: 8rem;
+    height: 5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--text-color);
+    text-align: center;
+    padding: 0 0.3rem;
+    overflow-wrap: break-word;
+  }
+
+  button {
+    background: none;
+    border: 3px solid var(--color-primary);
+    border-radius: 6px;
+    color: var(--color-primary);
+    font-family: 'Source Code Pro', monospace;
+    font-weight: 600;
+    font-size: 1.2rem;
+    padding: 0.6rem 1.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    user-select: none;
+  }
+
+  button:hover, button:focus {
+    background-color: var(--color-primary);
+    color: var(--bg-color);
+    outline: none;
+  }
+
+  /* Spin animation */
+  @keyframes spin-text {
+    0% {opacity: 1; transform: translateY(0);}
+    50% {opacity: 0.3; transform: translateY(-20px);}
+    100% {opacity: 1; transform: translateY(0);}
+  }
+
+  .spinning {
+    animation: spin-text 0.3s linear infinite;
+  }
+
+  /* Responsive */
+  @media (max-width: 500px) {
+    #slot-machine {
+      gap: 0.5rem;
     }
     .slot {
-      width: 180px;
-      height: 60px;
-      border: 2px solid #00ffcc;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.9rem;
-      background: #111;
-      text-align: center;
-      padding: 0 0.3rem;
-      box-shadow: 0 0 8px #00ffcc;
+      width: 6rem;
+      height: 4rem;
+      font-size: 1.3rem;
     }
     button {
-      background: #00ffcc;
-      color: black;
-      border: none;
-      padding: 0.75rem 1.25rem;
       font-size: 1rem;
-      cursor: pointer;
-      font-family: 'Press Start 2P', monospace;
-      text-transform: uppercase;
-      box-shadow: 0 0 8px #00ffcc;
+      padding: 0.5rem 1rem;
     }
-    button:hover {
-      background: #00ffee;
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
-  <h1>PöbelSlotMaschine</h1>
-  <div class="subtitle">Erstellt von Boomerfuchs9000</div>
-  <div class="slot-container">
-    <div class="slot" id="slot1">---</div>
-    <div class="slot" id="slot2">---</div>
-    <div class="slot" id="slot3">---</div>
-  </div>
-  <button onclick="rollSlots()">🧨 BÄÄÄM!</button>
 
-  <script>
-    let adj1 = [], adj2 = [], nouns = [];
+<h1>PÖBEL SLOTMASCHINE</h1>
 
-    async function loadWords() {
-      const response = await fetch("words.json");
-      const data = await response.json();
-      adj1 = data.adj1;
-      adj2 = data.adj2;
-      nouns = data.nouns;
+<div id="slot-machine">
+  <div id="slot1" class="slot">----</div>
+  <div id="slot2" class="slot">----</div>
+</div>
+
+<button id="spin-btn">Slot mich hart</button>
+
+<script>
+  let words = null;
+
+  async function loadWords() {
+    // JSON ist hier als JS-Objekt definiert, du kannst es alternativ extern laden
+    words = {
+      adj1: [
+        "räudig",
+        "verballert",
+        "matschig",
+        "muffig",
+        "miefig",
+        "gammlig",
+        "labbrig",
+        "gruselig"
+      ],
+      fem: {
+        nouns: [
+          "Pissflitsche",
+          "Knalltüte",
+          "Flachzange",
+          "Schnarchnase",
+          "Quatschbirne",
+          "Witzgurke",
+          "Blechhexe"
+        ]
+      },
+      masc: {
+        nouns: [
+          "Ballerkeks",
+          "Brabbelgott",
+          "Jockel",
+          "Eimer",
+          "Bummsolm",
+          "Grottenolm",
+          "Schwurbler",
+          "Wicht",
+          "Trottel",
+          "Lümmel",
+          "Modderkopp",
+          "Spinner",
+          "Lappen",
+          "Schlaumeier",
+          "Kasper",
+          "Hanswurst",
+          "Heiopei",
+          "Quatschkopf",
+          "Pappnase",
+          "Eierkopp",
+          "Wurzelzwerg",
+          "Hampelmann",
+          "Schlabberlappen",
+          "Schmalspurheld",
+          "Matschbirne",
+          "Brüllgurke",
+          "Knallkopp"
+        ]
+      }
+    };
+  }
+
+  function getRandom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  // Spin-Slot mit Text und optional Animation
+  function spinSlot(id, text, animated = false) {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    if (animated) {
+      el.classList.add("spinning");
+      setTimeout(() => {
+        el.textContent = text;
+        el.classList.remove("spinning");
+      }, 900);
+    } else {
+      el.textContent = text;
     }
+  }
 
-    async function rollSlots() {
-      if (!adj1.length) await loadWords();
-      let counter = 0;
-      const maxSpins = 15;
-      const interval = setInterval(() => {
-        document.getElementById('slot1').textContent = adj1[Math.floor(Math.random() * adj1.length)];
-        document.getElementById('slot2').textContent = adj2[Math.floor(Math.random() * adj2.length)];
-        document.getElementById('slot3').textContent = nouns[Math.floor(Math.random() * nouns.length)];
-        counter++;
-        if (counter > maxSpins) clearInterval(interval);
-      }, 100);
-    }
-  </script>
+  async function spin() {
+    if (!words) await loadWords();
+
+    const adjRoot = getRandom(words.adj1);
+    const genderKey = Math.random() < 0.5 ? "fem" : "masc";
+    const genderBlock = words[genderKey];
+    const noun = getRandom(genderBlock.nouns);
+
+    const adj = genderKey === "fem" ? adjRoot + "e" : adjRoot + "er";
+
+    spinSlot("slot1", adj, true);
+    spinSlot("slot2", noun, true);
+  }
+
+  document.getElementById("spin-btn").addEventListener("click", spin);
+
+  // Beim Laden gleich initialen Wert zeigen
+  window.onload = () => {
+    spinSlot("slot1", "----");
+    spinSlot("slot2", "----");
+  };
+</script>
+
 </body>
 </html>
