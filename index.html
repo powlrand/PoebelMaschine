@@ -5,98 +5,125 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Pöbelmaschine</title>
 <style>
-  :root {
-    --color-cyan: #00ffff;
-    --color-magenta: #ff00ff;
-    --color-yellow: #ffff00;
-    --color-text: var(--color-cyan);
-    --slot-bg: #001010;
-    --slot-border: var(--color-cyan);
-    --bg-color: #000000;
-    --font-family: 'Courier New', Courier, monospace;
-  }
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
   body {
-    background: var(--bg-color);
-    color: var(--color-text);
-    font-family: var(--font-family);
-    margin: 1rem;
+    background: black;
+    color: #0f0; /* grün */
+    font-family: 'Share Tech Mono', monospace;
     display: flex;
     flex-direction: column;
     align-items: center;
-    user-select: none;
+    justify-content: start;
+    min-height: 100vh;
+    margin: 0;
+    padding: 2rem;
   }
+
   h1 {
+    color: magenta;
     font-weight: 600;
-    font-size: 2.4rem;
-    color: var(--color-text);
-    margin-bottom: 1rem;
-    text-shadow:
-      1px 0 var(--color-text),
-      0 1px var(--color-text),
-      -1px 0 var(--color-text),
-      0 -1px var(--color-text);
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
   }
-  #slot-machine {
+
+  .slots {
     display: flex;
-    gap: 1rem;
+    gap: 0.8rem;
     margin-bottom: 2rem;
-    flex-wrap: nowrap;
-    min-width: 25rem;
   }
+
   .slot {
-    background: var(--slot-bg);
-    border: 3px solid var(--slot-border);
+    background: #020;
+    border: 3px solid magenta;
     border-radius: 6px;
-    width: 7rem;
-    height: 5rem;
+    width: 8rem;
+    height: 4rem;
     display: flex;
-    justify-content: center;
     align-items: center;
-    font-size: 1.8rem;
-    font-weight: 600;
-    color: var(--color-text);
-    text-align: center;
-    padding: 0 0.3rem;
-    overflow-wrap: break-word;
-    flex-shrink: 0;
-    letter-spacing: 0.05em;
+    justify-content: center;
+    font-size: 1.7rem;
+    text-transform: lowercase;
+    user-select: none;
+    box-shadow:
+      0 0 10px #f0f, 
+      inset 0 0 6px #0f0;
+    letter-spacing: 0.1em;
   }
-  #spin-button {
-    background: none;
-    border: 3px solid var(--color-text);
-    border-radius: 8px;
-    color: var(--color-text);
-    font-family: var(--font-family);
+
+  button {
+    font-family: 'Share Tech Mono', monospace;
     font-size: 1.3rem;
-    padding: 0.6rem 1.5rem;
+    background: magenta;
+    color: black;
+    border: none;
+    border-radius: 6px;
+    padding: 0.8rem 2rem;
     cursor: pointer;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    transition: background 0.2s, color 0.2s;
+    letter-spacing: 0.15em;
+    box-shadow: 0 0 12px magenta;
+    transition: background-color 0.3s ease;
   }
-  #spin-button:hover {
-    background: var(--color-text);
-    color: var(--bg-color);
+
+  button:hover {
+    background-color: #d100d1;
   }
-  #spin-button:active {
-    transform: scale(0.96);
+
+  /* Glitch Animation */
+  @keyframes glitch {
+    0% {
+      text-shadow:
+        2px 0 red,
+        -2px 0 cyan;
+      transform: translate(0);
+    }
+    20% {
+      text-shadow:
+        -2px 0 red,
+        2px 0 cyan;
+      transform: translate(-2px, 0);
+    }
+    40% {
+      text-shadow:
+        2px 2px red,
+        -2px -2px cyan;
+      transform: translate(2px, 2px);
+    }
+    60% {
+      text-shadow:
+        -2px -2px red,
+        2px 2px cyan;
+      transform: translate(-2px, -2px);
+    }
+    80% {
+      text-shadow:
+        2px 0 red,
+        -2px 0 cyan;
+      transform: translate(0);
+    }
+    100% {
+      text-shadow:
+        none;
+      transform: translate(0);
+    }
+  }
+
+  .glitch {
+    animation: glitch 0.3s ease-in-out 3;
   }
 
   /* Responsive */
   @media (max-width: 400px) {
-    #slot-machine {
-      min-width: auto;
-      gap: 0.5rem;
-      justify-content: center;
-    }
     .slot {
-      width: 5.5rem;
-      height: 4rem;
-      font-size: 1.4rem;
+      width: 6rem;
+      font-size: 1.3rem;
     }
-    #spin-button {
+    button {
+      width: 100%;
       font-size: 1.1rem;
-      padding: 0.5rem 1.2rem;
     }
   }
 </style>
@@ -105,64 +132,111 @@
 
 <h1>Pöbelmaschine</h1>
 
-<div id="slot-machine">
-  <div id="slot1" class="slot">----</div>
-  <div id="slot2" class="slot">----</div>
-  <div id="slot3" class="slot">----</div>
+<div class="slots">
+  <div id="slot1" class="slot">--</div>
+  <div id="slot2" class="slot">--</div>
+  <div id="slot3" class="slot">--</div>
 </div>
 
-<button id="spin-button">Slot mich hart</button>
+<button id="spinBtn">Slot mich hart</button>
 
 <script>
+  // Wortlisten
+
   const words = {
+    // Adjektive im Grundstamm (ohne Endung)
     adj1: [
       "räudig", "verballert", "matschig", "muffig", "miefig", "gammlig", "labbrig", "gruselig"
     ],
+
+    // Part 1: erster Teil des Komposits
     part1: [
-      "Baller", "Brabbel", "Grotten", "Papp", "Schwurb", "Flach", "Wurst", "Schlabber", "Matsch", "Brüll"
+      "baller", "brabbel", "blech", "dumpfsupp", "grotten", "knall", "knurps", "knorzel",
+      "matschi", "mumpf", "papp", "plapper", "piss", "quatsch", "schlabber", "schlurf",
+      "schwabbel", "schwurb", "stink", "verknatscht", "zappel"
     ],
+
+    // Part 2: zweiter Teil mit Genus für korrekte Adjektivendung
     part2: [
-      "Jockel", "Eimer", "Olm", "Keks", "Kopp", "Klopper", "Kreisel", "Gott", "Kopp", "Kante", "Birne", "Kopf", "Birne"
+      { wort: "Jockel", genus: "m" },
+      { wort: "Eimer", genus: "m" },
+      { wort: "Olm", genus: "m" },
+      { wort: "Keks", genus: "m" },
+      { wort: "Kopp", genus: "m" },
+      { wort: "Klopper", genus: "m" },
+      { wort: "Kreisel", genus: "m" },
+      { wort: "Gott", genus: "m" },
+      { wort: "Kante", genus: "w" },
+      { wort: "Birne", genus: "w" },
+      { wort: "Pille", genus: "w" },
+      { wort: "Nudel", genus: "w" },
+      { wort: "Kuh", genus: "w" },
+      { wort: "Lache", genus: "w" },
+      { wort: "Matte", genus: "w" }
     ]
   };
 
+  // Hilfsfunktion: zufälliges Element aus Array
   function getRandom(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
   }
 
+  // Adjektiv beugen nach Genus (bestimmter Artikel, Nominativ Singular)
+  function beugeAdjektiv(adj, genus) {
+    switch (genus) {
+      case "m": return adj + "er";
+      case "w": return adj + "e";
+      case "s": return adj + "es";
+      default: return adj;
+    }
+  }
+
+  // Spin-Effekt: Text mit Glitch animieren (kurz)
+  function glitchEffect(element) {
+    element.classList.add("glitch");
+    setTimeout(() => element.classList.remove("glitch"), 900);
+  }
+
+  // Slot-Inhalte setzen mit Glitch
   function spinSlot(id, text) {
     const el = document.getElementById(id);
     el.textContent = text;
+    glitchEffect(el);
   }
 
+  // Spin-Funktion: 3 Slots
   async function spin() {
-    // Animation: kurz "glitchen"
-    const glitchIterations = 6;
-    const glitchDelay = 80;
+    // Kurzer Glitch-Scramble Effekt
+    for (let i = 0; i < 6; i++) {
+      const adjRandom = getRandom(words.adj1);
+      const part1Random = getRandom(words.part1);
+      const part2Random = getRandom(words.part2);
 
-    for (let i = 0; i < glitchIterations; i++) {
-      spinSlot("slot1", getRandom(words.adj1));
-      spinSlot("slot2", getRandom(words.part1) + "-");
-      spinSlot("slot3", getRandom(words.part2));
-      await new Promise(r => setTimeout(r, glitchDelay));
+      spinSlot("slot1", adjRandom + "..."); // vorläufig, ohne Beugung beim Scramble
+      spinSlot("slot2", part1Random + "-");
+      spinSlot("slot3", part2Random.wort);
+
+      await new Promise(r => setTimeout(r, 70));
     }
 
-    // Finale Ausgabe
-    const adj1 = getRandom(words.adj1);
+    // Finale Auswahl
+    const adj = getRandom(words.adj1);
     const part1 = getRandom(words.part1);
     const part2 = getRandom(words.part2);
 
-    spinSlot("slot1", adj1);
+    const adjBeugt = beugeAdjektiv(adj, part2.genus);
+
+    spinSlot("slot1", adjBeugt);
     spinSlot("slot2", part1 + "-");
-    spinSlot("slot3", part2);
+    spinSlot("slot3", part2.wort);
   }
 
-  document.getElementById("spin-button").addEventListener("click", spin);
+  // Event Listener für Button
+  document.getElementById("spinBtn").addEventListener("click", spin);
 
-  // Initial Text
-  spinSlot("slot1", "----");
-  spinSlot("slot2", "----");
-  spinSlot("slot3", "----");
+  // Initial Fill
+  spin();
+
 </script>
 
 </body>
