@@ -31,7 +31,7 @@
 
   .slots {
     display: flex;
-    gap: 0.8rem;
+    gap: 1rem;
     margin-bottom: 2rem;
   }
 
@@ -39,18 +39,22 @@
     background: #020;
     border: 3px solid magenta;
     border-radius: 6px;
-    width: 8rem;
-    height: 4rem;
+    width: 12rem;           /* breiter für längere Wörter */
+    height: 4.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.7rem;
+    font-size: 1.4rem;      /* etwas kleiner */
     text-transform: lowercase;
     user-select: none;
     box-shadow:
       0 0 10px #f0f, 
       inset 0 0 6px #0f0;
     letter-spacing: 0.1em;
+    padding: 0 0.5rem;
+    white-space: nowrap;    /* kein Zeilenumbruch */
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   button {
@@ -116,10 +120,10 @@
   }
 
   /* Responsive */
-  @media (max-width: 400px) {
+  @media (max-width: 480px) {
     .slot {
-      width: 6rem;
-      font-size: 1.3rem;
+      width: 9rem;
+      font-size: 1.1rem;
     }
     button {
       width: 100%;
@@ -212,7 +216,7 @@
       const part1Random = getRandom(words.part1);
       const part2Random = getRandom(words.part2);
 
-      spinSlot("slot1", adjRandom + "..."); // vorläufig, ohne Beugung beim Scramble
+      spinSlot("slot1", adjRandom + "...");
       spinSlot("slot2", part1Random + "-");
       spinSlot("slot3", part2Random.wort);
 
@@ -236,7 +240,6 @@
 
   // Initial Fill
   spin();
-
 </script>
 
 </body>
