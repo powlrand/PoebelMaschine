@@ -10,18 +10,23 @@
       0% {
         text-shadow: 2px 0 yellow, -2px 0 cyan;
       }
+
       20% {
         text-shadow: -2px 0 magenta, 2px 0 lime;
       }
+
       40% {
         text-shadow: 2px 0 red, -2px 0 blue;
       }
+
       60% {
         text-shadow: -2px 0 cyan, 2px 0 magenta;
       }
+
       80% {
         text-shadow: 2px 0 lime, -2px 0 yellow;
       }
+
       100% {
         text-shadow: 2px 0 yellow, -2px 0 cyan;
       }
@@ -117,36 +122,65 @@
     </div>
     <button onclick="generate()">START</button>
   </div>
-  <footer> ♥ by Paul Rand</footer>
+  <footer>* by Paul Rand</footer>
 
   <script>
-    const adjectives = [
-      "räudige", "verstrahlte", "verpeilte", "verrotzte", "klapprige",
-      "nervige", "plärrende", "flutschige", "bräsige", "verballerte",
-      "dumme", "trantütige", "verhuschte", "prasslige"
-    ];
+    const adjectives = {
+      m: [
+        "räudiger", "verballerter", "matschiger", "muffiger",
+        "miefiger", "gammliger", "labbriger", "verschallerter",
+        "gruseliger", "schleimiger", "prassliger"
+      ],
+      f: [
+        "räudige", "verballerte", "matschige", "muffige",
+        "miefige", "gammlige", "labbrige", "verschallerte",
+        "gruselige", "schleimige", "prasslige"
+      ]
+    };
 
     const part1 = [
       "Baller", "Brabbel", "Grotten", "Modder", "Wurst", "Quatsch",
       "Eier", "Wurzel", "Hampel", "Knitter", "Hohl", "Piss", "Zappel",
       "Lotter", "Kuller", "Dings", "Bims", "Bums", "Knatter", "Blech",
-      "Laub", "Schaum", "Gammel"
+      "Laub", "Schaum", "Gammel","Brech"
     ];
 
     const part2 = [
-      "Keks", "Gott", "Jockel", "Eimer", "Olm", "Schwurbler", "Wicht",
-      "Trottel", "Lümmel", "Kopp", "Spinner", "Lappen", "Mirko", "Kasper",
-      "Hannes", "Heiopei", "Zwerg", "Held", "Ingo", "Lauch", "Flitsche",
-      "Karton", "Rambo", "Nase"
+      { word: "Keks", gender: "m" },
+      { word: "Gott", gender: "m" },
+      { word: "Jockel", gender: "m" },
+      { word: "Eimer", gender: "m" },
+      { word: "Olm", gender: "m" },
+      { word: "Schwurbler", gender: "m" },
+      { word: "Wicht", gender: "m" },
+      { word: "Trottel", gender: "m" },
+      { word: "Lümmel", gender: "m" },
+      { word: "Kopp", gender: "m" },
+      { word: "Spinner", gender: "m" },
+      { word: "Lappen", gender: "m" },
+      { word: "Mirko", gender: "m" },
+      { word: "Kasper", gender: "m" },
+      { word: "Hannes", gender: "m" },
+      { word: "Heiopei", gender: "m" },
+      { word: "Zwerg", gender: "m" },
+      { word: "Held", gender: "m" },
+      { word: "Ingo", gender: "m" },
+      { word: "Lauch", gender: "m" },
+      { word: "Flitsche", gender: "f" },
+      { word: "Karton", gender: "m" },
+      { word: "Rambo", gender: "m" },
+      { word: "Nase", gender: "f" }
     ];
 
     function generate() {
-      const a = adjectives[Math.floor(Math.random() * adjectives.length)];
       const p1 = part1[Math.floor(Math.random() * part1.length)];
       const p2 = part2[Math.floor(Math.random() * part2.length)];
+      const adjList = adjectives[p2.gender];
+      const a = adjList[Math.floor(Math.random() * adjList.length)];
+
       document.getElementById("slot1").textContent = a;
       document.getElementById("slot2").textContent = p1;
-      document.getElementById("slot3").textContent = p2;
+      document.getElementById("slot3").textContent = p2.word;
     }
   </script>
 </body>
