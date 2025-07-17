@@ -1,227 +1,120 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Pöbelmaschine</title>
-<style>
-  /* Farbpalette CMYK-inspiriert: Cyan, Magenta, Yellow, Schwarz */
-  :root {
-    --cyan: #00bcd4;
-    --magenta: #e91e63;
-    --yellow: #ffeb3b;
-    --black: #212121;
-    --bg: #121212;
-    --slot-bg: #1f1f1f;
-    --slot-border: #333;
-    --text-light: #e0e0e0;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PöbelMaschine</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #ffff00;
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+    }
 
-  body {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--bg);
-    color: var(--text-light);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    padding: 2rem;
-  }
+    header, footer {
+      padding: 1rem;
+      color: #ffff00;
+      font-weight: bold;
+    }
 
-  h1 {
-    color: var(--yellow);
-    margin-bottom: 1rem;
-    text-align: center;
-  }
+    .slots {
+      display: flex;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
 
-  .pobelmaschine {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    justify-content: center;
-    max-width: 800px;
-    margin-bottom: 2rem;
-  }
-
-  .slot {
-    background-color: var(--slot-bg);
-    border: 2px solid var(--slot-border);
-    border-radius: 10px;
-    padding: 1rem 2rem;
-    font-size: 2rem;
-    font-weight: 700;
-    text-align: center;
-    min-width: 140px;
-    flex-grow: 1;
-    user-select: none;
-    transition: border-color 0.3s ease;
-  }
-
-  /* Farblich unterschiedlich je Slot */
-  .slot.adj {
-    border-color: var(--cyan);
-    color: var(--cyan);
-  }
-  .slot.part1 {
-    border-color: var(--magenta);
-    color: var(--magenta);
-  }
-  .slot.part2 {
-    border-color: var(--yellow);
-    color: var(--black);
-    background-color: var(--yellow);
-  }
-
-  button {
-    background: var(--cyan);
-    border: none;
-    padding: 1rem 2rem;
-    border-radius: 8px;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--black);
-    cursor: pointer;
-    user-select: none;
-    box-shadow: 0 0 8px var(--cyan);
-    transition: background-color 0.3s ease;
-  }
-
-  button:hover {
-    background-color: var(--magenta);
-    color: var(--text-light);
-    box-shadow: 0 0 12px var(--magenta);
-  }
-
-  @media (max-width: 500px) {
     .slot {
-      font-size: 1.4rem;
-      padding: 0.7rem 1rem;
-      min-width: 100px;
+      border: 2px solid #ffff00;
+      padding: 1rem 2rem;
+      font-size: 2rem;
+      min-width: 120px;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
     }
+
+    .glitch {
+      animation: glitch 1s infinite;
+    }
+
+    @keyframes glitch {
+      0% { text-shadow: 2px 0 red, -2px 0 blue; }
+      20% { text-shadow: -2px 0 green, 2px 0 magenta; }
+      40% { text-shadow: 2px 0 yellow, -2px 0 cyan; }
+      60% { text-shadow: -1px 1px lime, 1px -1px pink; }
+      80% { text-shadow: 0px 0px white; }
+      100% { text-shadow: 2px 0 red, -2px 0 blue; }
+    }
+
     button {
-      width: 100%;
+      background: transparent;
+      border: 2px solid #ffff00;
+      color: #ffff00;
+      padding: 0.5rem 1rem;
+      font-size: 1.2rem;
+      cursor: pointer;
     }
-    .pobelmaschine {
-      gap: 0.5rem;
-    }
-  }
-</style>
+  </style>
 </head>
 <body>
-  <h1>Die Pöbelmaschine</h1>
-
-  <div class="pobelmaschine">
-    <div class="slot adj" id="slot-adj">--</div>
-    <div class="slot part1" id="slot-part1">--</div>
-    <div class="slot part2" id="slot-part2">--</div>
+  <header>Pöbelmaschine v2</header>
+  <div class="slots">
+    <div class="slot" id="slot1">---</div>
+    <div class="slot" id="slot2">---</div>
+    <div class="slot" id="slot3">---</div>
   </div>
+  <button onclick="roll()">slot mich hart</button>
+  <footer>@2025 by Paul Rand™</footer>
 
-  <button id="generateBtn">Neues Pöbel generieren</button>
+  <script>
+    const adjectives = [
+      "räudige", "verschallerte", "verballerte", "bräsige",
+      "muffelige", "flutschige", "prasslige", "rotzige",
+      "glibberige", "gammelige"
+    ];
 
-<script>
-  const words = {
-    adj: {
-      m: [
-        "räudiger",
-        "verballerter",
-        "matschiger",
-        "muffiger",
-        "miefiger",
-        "gammliger",
-        "prassliger",
-        "verwaschener",
-        "verquollener",
-        "verschlackerter",
-        "knalliger",
-        "bröseliger",
-        "dreckiger",
-        "labbriger",
-        "gruseliger",
-        "ranziger",
-        "schröcklicher",
-        "patschiger"
-      ]
-    },
-    part1: [
-      "Baller",
-      "Brabbel",
-      "Grotten",
-      "Modder",
-      "Wurst",
-      "Quatsch",
-      "Eier",
-      "Wurzel",
-      "Hampel",
-      "Knitter",
-      "Hohl",
-      "Piss",
-      "Zappel",
-      "Lotter",
-      "Kuller",
-      "Bims",
-      "Bums",
-      "Knatter",
-      "Blech",
-      "Laub",
-      "Schaum",
-      "Gammel"
-    ],
-    part2: [
-      "Keks",
-      "Gott",
-      "Jockel",
-      "Eimer",
-      "Olm",
-      "Schwurbler",
-      "Wicht",
-      "Trottel",
-      "Lümmel",
-      "Kopp",
-      "Spinner",
-      "Mirko",
-      "Kasper",
-      "Hannes",
-      "Heiopei",
-      "Zwerg",
-      "Held",
-      "Ingo",
-      "Lauch",
-      "Flitsche",
-      "Karton",
-      "Rambo",
-      "Nase"
-    ]
-  };
+    const part1 = [
+      "Baller", "Brabbel", "Grotten", "Modder", "Wurst", "Quatsch",
+      "Eier", "Wurzel", "Hampel", "Knitter", "Hohl", "Piss",
+      "Zappel", "Lotter", "Kuller", "Dings", "Bims", "Bums",
+      "Knatter", "Blech", "Laub", "Schaum"
+    ];
 
-  // Funktion zum zufälligen Auswählen eines Elements aus Array
-  function randomChoice(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
-  }
+    const part2 = [
+      "Keks", "Gott", "Jockel", "Eimer", "Olm", "Schwurbler",
+      "Wicht", "Trottel", "Lümmel", "Kopp", "Spinner", "Lappen",
+      "Mirko", "Kasper", "Hannes", "Heiopei", "Zwerg", "Held",
+      "Ingo", "Lauch", "Flitsche", "Karton", "Rambo", "Nase"
+    ];
 
-  // Element-Referenzen
-  const slotAdj = document.getElementById("slot-adj");
-  const slotPart1 = document.getElementById("slot-part1");
-  const slotPart2 = document.getElementById("slot-part2");
-  const btn = document.getElementById("generateBtn");
+    function roll() {
+      const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
+      const p1 = part1[Math.floor(Math.random() * part1.length)];
+      const p2 = part2[Math.floor(Math.random() * part2.length)];
 
-  // Generieren einer neuen Beleidigung
-  function generatePobel() {
-    // Maskulin - alle Adjektive enden mit -er
-    const adj = randomChoice(words.adj.m);
-    const p1 = randomChoice(words.part1);
-    const p2 = randomChoice(words.part2);
+      document.getElementById("slot1").textContent = adj;
+      document.getElementById("slot2").textContent = p1;
+      document.getElementById("slot3").textContent = p2;
 
-    slotAdj.textContent = adj;
-    slotPart1.textContent = p1;
-    slotPart2.textContent = p2;
-  }
+      document.getElementById("slot1").classList.add("glitch");
+      document.getElementById("slot2").classList.add("glitch");
+      document.getElementById("slot3").classList.add("glitch");
 
-  btn.addEventListener("click", generatePobel);
-
-  // Initiale Ausgabe
-  generatePobel();
-</script>
-
+      setTimeout(() => {
+        document.getElementById("slot1").classList.remove("glitch");
+        document.getElementById("slot2").classList.remove("glitch");
+        document.getElementById("slot3").classList.remove("glitch");
+      }, 1000);
+    }
+  </script>
 </body>
 </html>
