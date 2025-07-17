@@ -1,154 +1,111 @@
 <!DOCTYPE html>
 <html lang="de">
-
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Pöbelmaschine</title>
   <style>
     @keyframes glitch {
-      0% {
-        text-shadow: 2px 0 yellow, -2px 0 cyan;
-      }
-      20% {
-        text-shadow: -2px 0 magenta, 2px 0 lime;
-      }
-      40% {
-        text-shadow: 2px 0 red, -2px 0 blue;
-      }
-      60% {
-        text-shadow: -2px 0 cyan, 2px 0 magenta;
-      }
-      80% {
-        text-shadow: 2px 0 lime, -2px 0 yellow;
-      }
-      100% {
-        text-shadow: 2px 0 yellow, -2px 0 cyan;
-      }
+      0% { text-shadow: 2px 2px magenta, -2px -2px cyan; }
+      20% { text-shadow: -2px 2px cyan, 2px -2px magenta; }
+      40% { text-shadow: 2px -2px magenta, -2px 2px cyan; }
+      60% { text-shadow: -2px -2px cyan, 2px 2px magenta; }
+      80% { text-shadow: 2px 2px cyan, -2px -2px magenta; }
+      100% { text-shadow: -2px 2px magenta, 2px -2px cyan; }
     }
 
     body {
-      background-color: black;
+      margin: 0;
+      background: black;
       color: yellow;
       font-family: monospace;
-      margin: 0;
-      padding: 0;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-    }
-
-    header {
-      font-size: 2.5rem;
       text-align: center;
-      padding: 1rem;
-      animation: glitch 1s infinite;
     }
 
-    .slot-machine {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 2rem;
-      box-sizing: border-box;
+    h1 {
+      font-size: 2.5rem;
+      margin-top: 1rem;
+      animation: glitch 1.2s infinite;
     }
 
     .slots {
       display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
       justify-content: center;
+      flex-wrap: wrap;
+      margin: 2rem 1rem;
+      gap: 1rem;
     }
 
     .slot {
+      background: black;
       border: 3px solid yellow;
       padding: 1rem 2rem;
       font-size: 2rem;
-      min-width: 120px;
-      text-align: center;
+      width: 120px;
+      min-height: 60px;
       animation: glitch 1.2s infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     button {
-      margin-top: 2rem;
-      padding: 1rem 2rem;
-      font-size: 1.5rem;
+      background: yellow;
+      color: black;
       font-weight: bold;
-      background: black;
-      color: yellow;
-      border: 2px solid yellow;
+      padding: 0.8rem 1.5rem;
+      border: none;
+      font-size: 1.2rem;
       cursor: pointer;
+      margin-bottom: 2rem;
     }
 
     footer {
-      text-align: center;
+      margin-top: auto;
       font-size: 0.8rem;
+      color: yellow;
       padding: 1rem;
-    }
-
-    @media (max-width: 600px) {
-      .slot {
-        font-size: 1.2rem;
-        padding: 0.5rem 1rem;
-        min-width: 80px;
-      }
-
-      button {
-        font-size: 1rem;
-        padding: 0.5rem 1rem;
-      }
-
-      header {
-        font-size: 2rem;
-      }
     }
   </style>
 </head>
-
 <body>
-  <header>Pöbelmaschine</header>
-  <div class="slot-machine">
-    <div class="slots">
-      <div class="slot" id="slot1">----</div>
-      <div class="slot" id="slot2">----</div>
-      <div class="slot" id="slot3">----</div>
-    </div>
-    <button onclick="generate()">START</button>
+  <h1>PÖBELMASCHINE</h1>
+  <div class="slots">
+    <div id="slot1" class="slot">---</div>
+    <div id="slot2" class="slot">---</div>
+    <div id="slot3" class="slot">---</div>
   </div>
-  <footer>❤️ by Paul Rand</footer>
+  <button onclick="start()">START</button>
+  <footer>&lt;3 by Paul Rand</footer>
 
   <script>
-    const adjectives = [
-      "räudige", "verstrahlte", "verpeilte", "verrotzte", "klapprige",
-      "nervige", "plärrende", "flutschige", "bräsige", "verballerte",
-      "dumme", "trantütige", "verhuschte", "prasslige"
+    const adj = [
+      "räudige", "verstrahlte", "brunzige", "verrotzte", "verschallerte", "schlonzige",
+      "zerlatschte", "gammelige", "vermatschte", "versabberte", "verbeulte",
+      "trantütige", "klapprige", "verfledderte", "versiffte", "klobige",
+      "wackelige", "torkelnde", "prasslige"
     ];
 
     const part1 = [
-      "Baller", "Brabbel", "Grotten", "Modder", "Wurst", "Quatsch",
-      "Eier", "Wurzel", "Hampel", "Knitter", "Hohl", "Piss", "Zappel",
-      "Lotter", "Kuller", "Dings", "Bims", "Bums", "Knatter", "Blech",
-      "Laub", "Schaum", "Gammel"
+      "Baller", "Brabbel", "Grotten", "Modder", "Wurst", "Quatsch", "Eier", "Wurzel",
+      "Hampel", "Knitter", "Hohl", "Piss", "Zappel", "Lotter", "Kuller", "Dings",
+      "Bims", "Bums", "Knatter", "Blech", "Laub", "Schaum", "Ranz", "Schleim", "Gammel", "Patsche"
     ];
 
     const part2 = [
-      "Keks", "Gott", "Jockel", "Eimer", "Olm", "Schwurbler", "Wicht",
-      "Trottel", "Lümmel", "Kopp", "Spinner", "Lappen", "Mirko", "Kasper",
-      "Hannes", "Heiopei", "Zwerg", "Held", "Ingo", "Lauch", "Flitsche",
-      "Karton", "Rambo", "Nase"
+      "Keks", "Gott", "Jockel", "Eimer", "Olm", "Schwurbler", "Wicht", "Trottel",
+      "Lümmel", "Kopp", "Spinner", "Lappen", "Mirko", "Kasper", "Hannes", "Heiopei",
+      "Zwerg", "Held", "Ingo", "Lauch", "Flitsche", "Karton", "Rambo", "Nase"
     ];
 
-    function generate() {
-      const a = adjectives[Math.floor(Math.random() * adjectives.length)];
-      const p1 = part1[Math.floor(Math.random() * part1.length)];
-      const p2 = part2[Math.floor(Math.random() * part2.length)];
-      document.getElementById("slot1").textContent = a;
-      document.getElementById("slot2").textContent = p1;
-      document.getElementById("slot3").textContent = p2;
+    function start() {
+      document.getElementById('slot1').textContent = adj[Math.floor(Math.random() * adj.length)];
+      document.getElementById('slot2').textContent = part1[Math.floor(Math.random() * part1.length)];
+      document.getElementById('slot3').textContent = part2[Math.floor(Math.random() * part2.length)];
     }
   </script>
 </body>
-
 </html>
