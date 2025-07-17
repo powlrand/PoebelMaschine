@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>PöbelSlotMaschine</title>
+<title>Pöbelmaschine</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@600&display=swap');
 
@@ -49,12 +49,12 @@
     background: var(--slot-bg);
     border: 3px solid var(--slot-border);
     border-radius: 6px;
-    width: 8rem;
+    width: 7rem;
     height: 5rem;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     font-weight: 600;
     color: var(--text-color);
     text-align: center;
@@ -99,9 +99,9 @@
       gap: 0.5rem;
     }
     .slot {
-      width: 6rem;
+      width: 5.5rem;
       height: 4rem;
-      font-size: 1.3rem;
+      font-size: 1.2rem;
     }
     button {
       font-size: 1rem;
@@ -112,11 +112,12 @@
 </head>
 <body>
 
-<h1>PÖBEL SLOTMASCHINE</h1>
+<h1>PÖBELMASCHINE</h1>
 
 <div id="slot-machine">
   <div id="slot1" class="slot">----</div>
   <div id="slot2" class="slot">----</div>
+  <div id="slot3" class="slot">----</div>
 </div>
 
 <button id="spin-btn">Slot mich hart</button>
@@ -125,7 +126,6 @@
   let words = null;
 
   async function loadWords() {
-    // JSON ist hier als JS-Objekt definiert, du kannst es alternativ extern laden
     words = {
       adj1: [
         "räudig",
@@ -186,7 +186,6 @@
     return arr[Math.floor(Math.random() * arr.length)];
   }
 
-  // Spin-Slot mit Text und optional Animation
   function spinSlot(id, text, animated = false) {
     const el = document.getElementById(id);
     if (!el) return;
@@ -206,22 +205,29 @@
     if (!words) await loadWords();
 
     const adjRoot = getRandom(words.adj1);
-    const genderKey = Math.random() < 0.5 ? "fem" : "masc";
-    const genderBlock = words[genderKey];
-    const noun = getRandom(genderBlock.nouns);
 
-    const adj = genderKey === "fem" ? adjRoot + "e" : adjRoot + "er";
+    // Für 3 Slots: 1. adj, 2. fem-Nomen oder masc-Nomen, 3. masc-Nomen
+    // Slot 1: adjektiv (mask/fem Endung je nach noun Slot 2)
+    // Slot 2: fem oder masc noun (50/50)
+    // Slot 3: masc noun (immer masc)
+
+    const femOrMasc = Math.random() < 0.5 ? "fem" : "masc";
+    const noun2 = getRandom(words[femOrMasc].nouns);
+    const noun3 = getRandom(words.masc.nouns);
+
+    const adj = femOrMasc === "fem" ? adjRoot + "e" : adjRoot + "er";
 
     spinSlot("slot1", adj, true);
-    spinSlot("slot2", noun, true);
+    spinSlot("slot2", noun2, true);
+    spinSlot("slot3", noun3, true);
   }
 
   document.getElementById("spin-btn").addEventListener("click", spin);
 
-  // Beim Laden gleich initialen Wert zeigen
   window.onload = () => {
     spinSlot("slot1", "----");
     spinSlot("slot2", "----");
+    spinSlot("slot3", "----");
   };
 </script>
 
