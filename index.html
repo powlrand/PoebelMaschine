@@ -5,241 +5,222 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Pöbelmaschine</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+  /* Farbpalette CMYK-inspiriert: Cyan, Magenta, Yellow, Schwarz */
+  :root {
+    --cyan: #00bcd4;
+    --magenta: #e91e63;
+    --yellow: #ffeb3b;
+    --black: #212121;
+    --bg: #121212;
+    --slot-bg: #1f1f1f;
+    --slot-border: #333;
+    --text-light: #e0e0e0;
+  }
 
   body {
-    background: black;
-    color: #0f0; /* grün */
-    font-family: 'Share Tech Mono', monospace;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg);
+    color: var(--text-light);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: start;
     min-height: 100vh;
-    margin: 0;
     padding: 2rem;
   }
 
   h1 {
-    color: magenta;
-    font-weight: 600;
-    font-size: 2.5rem;
-    margin-bottom: 1.5rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
+    color: var(--yellow);
+    margin-bottom: 1rem;
+    text-align: center;
   }
 
-  .slots {
+  .pobelmaschine {
     display: flex;
     gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 800px;
     margin-bottom: 2rem;
   }
 
   .slot {
-    background: #020;
-    border: 3px solid magenta;
-    border-radius: 6px;
-    width: 12rem;           /* breiter für längere Wörter */
-    height: 4.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;      /* etwas kleiner */
-    text-transform: lowercase;
+    background-color: var(--slot-bg);
+    border: 2px solid var(--slot-border);
+    border-radius: 10px;
+    padding: 1rem 2rem;
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    min-width: 140px;
+    flex-grow: 1;
     user-select: none;
-    box-shadow:
-      0 0 10px #f0f, 
-      inset 0 0 6px #0f0;
-    letter-spacing: 0.1em;
-    padding: 0 0.5rem;
-    white-space: nowrap;    /* kein Zeilenumbruch */
-    overflow: hidden;
-    text-overflow: ellipsis;
+    transition: border-color 0.3s ease;
+  }
+
+  /* Farblich unterschiedlich je Slot */
+  .slot.adj {
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+  .slot.part1 {
+    border-color: var(--magenta);
+    color: var(--magenta);
+  }
+  .slot.part2 {
+    border-color: var(--yellow);
+    color: var(--black);
+    background-color: var(--yellow);
   }
 
   button {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 1.3rem;
-    background: magenta;
-    color: black;
+    background: var(--cyan);
     border: none;
-    border-radius: 6px;
-    padding: 0.8rem 2rem;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--black);
     cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    box-shadow: 0 0 12px magenta;
+    user-select: none;
+    box-shadow: 0 0 8px var(--cyan);
     transition: background-color 0.3s ease;
   }
 
   button:hover {
-    background-color: #d100d1;
+    background-color: var(--magenta);
+    color: var(--text-light);
+    box-shadow: 0 0 12px var(--magenta);
   }
 
-  /* Glitch Animation */
-  @keyframes glitch {
-    0% {
-      text-shadow:
-        2px 0 red,
-        -2px 0 cyan;
-      transform: translate(0);
-    }
-    20% {
-      text-shadow:
-        -2px 0 red,
-        2px 0 cyan;
-      transform: translate(-2px, 0);
-    }
-    40% {
-      text-shadow:
-        2px 2px red,
-        -2px -2px cyan;
-      transform: translate(2px, 2px);
-    }
-    60% {
-      text-shadow:
-        -2px -2px red,
-        2px 2px cyan;
-      transform: translate(-2px, -2px);
-    }
-    80% {
-      text-shadow:
-        2px 0 red,
-        -2px 0 cyan;
-      transform: translate(0);
-    }
-    100% {
-      text-shadow:
-        none;
-      transform: translate(0);
-    }
-  }
-
-  .glitch {
-    animation: glitch 0.3s ease-in-out 3;
-  }
-
-  /* Responsive */
-  @media (max-width: 480px) {
+  @media (max-width: 500px) {
     .slot {
-      width: 9rem;
-      font-size: 1.1rem;
+      font-size: 1.4rem;
+      padding: 0.7rem 1rem;
+      min-width: 100px;
     }
     button {
       width: 100%;
-      font-size: 1.1rem;
+    }
+    .pobelmaschine {
+      gap: 0.5rem;
     }
   }
 </style>
 </head>
 <body>
+  <h1>Die Pöbelmaschine</h1>
 
-<h1>Pöbelmaschine</h1>
+  <div class="pobelmaschine">
+    <div class="slot adj" id="slot-adj">--</div>
+    <div class="slot part1" id="slot-part1">--</div>
+    <div class="slot part2" id="slot-part2">--</div>
+  </div>
 
-<div class="slots">
-  <div id="slot1" class="slot">--</div>
-  <div id="slot2" class="slot">--</div>
-  <div id="slot3" class="slot">--</div>
-</div>
-
-<button id="spinBtn">Slot mich hart</button>
+  <button id="generateBtn">Neues Pöbel generieren</button>
 
 <script>
-  // Wortlisten
-
   const words = {
-    // Adjektive im Grundstamm (ohne Endung)
-    adj1: [
-      "räudig", "verballert", "matschig", "muffig", "miefig", "gammlig", "labbrig", "gruselig"
-    ],
-
-    // Part 1: erster Teil des Komposits
+    adj: {
+      m: [
+        "räudiger",
+        "verballerter",
+        "matschiger",
+        "muffiger",
+        "miefiger",
+        "gammliger",
+        "prassliger",
+        "verwaschener",
+        "verquollener",
+        "verschlackerter",
+        "knalliger",
+        "bröseliger",
+        "dreckiger",
+        "labbriger",
+        "gruseliger",
+        "ranziger",
+        "schröcklicher",
+        "patschiger"
+      ]
+    },
     part1: [
-      "baller", "brabbel", "blech", "dumpfsupp", "grotten", "knall", "knurps", "knorzel",
-      "matschi", "mumpf", "papp", "plapper", "piss", "quatsch", "schlabber", "schlurf",
-      "schwabbel", "schwurb", "stink", "verknatscht", "zappel"
+      "Baller",
+      "Brabbel",
+      "Grotten",
+      "Modder",
+      "Wurst",
+      "Quatsch",
+      "Eier",
+      "Wurzel",
+      "Hampel",
+      "Knitter",
+      "Hohl",
+      "Piss",
+      "Zappel",
+      "Lotter",
+      "Kuller",
+      "Bims",
+      "Bums",
+      "Knatter",
+      "Blech",
+      "Laub",
+      "Schaum",
+      "Gammel"
     ],
-
-    // Part 2: zweiter Teil mit Genus für korrekte Adjektivendung
     part2: [
-      { wort: "Jockel", genus: "m" },
-      { wort: "Eimer", genus: "m" },
-      { wort: "Olm", genus: "m" },
-      { wort: "Keks", genus: "m" },
-      { wort: "Kopp", genus: "m" },
-      { wort: "Klopper", genus: "m" },
-      { wort: "Kreisel", genus: "m" },
-      { wort: "Gott", genus: "m" },
-      { wort: "Kante", genus: "w" },
-      { wort: "Birne", genus: "w" },
-      { wort: "Pille", genus: "w" },
-      { wort: "Nudel", genus: "w" },
-      { wort: "Kuh", genus: "w" },
-      { wort: "Lache", genus: "w" },
-      { wort: "Matte", genus: "w" }
+      "Keks",
+      "Gott",
+      "Jockel",
+      "Eimer",
+      "Olm",
+      "Schwurbler",
+      "Wicht",
+      "Trottel",
+      "Lümmel",
+      "Kopp",
+      "Spinner",
+      "Mirko",
+      "Kasper",
+      "Hannes",
+      "Heiopei",
+      "Zwerg",
+      "Held",
+      "Ingo",
+      "Lauch",
+      "Flitsche",
+      "Karton",
+      "Rambo",
+      "Nase"
     ]
   };
 
-  // Hilfsfunktion: zufälliges Element aus Array
-  function getRandom(arr) {
+  // Funktion zum zufälligen Auswählen eines Elements aus Array
+  function randomChoice(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
   }
 
-  // Adjektiv beugen nach Genus (bestimmter Artikel, Nominativ Singular)
-  function beugeAdjektiv(adj, genus) {
-    switch (genus) {
-      case "m": return adj + "er";
-      case "w": return adj + "e";
-      case "s": return adj + "es";
-      default: return adj;
-    }
+  // Element-Referenzen
+  const slotAdj = document.getElementById("slot-adj");
+  const slotPart1 = document.getElementById("slot-part1");
+  const slotPart2 = document.getElementById("slot-part2");
+  const btn = document.getElementById("generateBtn");
+
+  // Generieren einer neuen Beleidigung
+  function generatePobel() {
+    // Maskulin - alle Adjektive enden mit -er
+    const adj = randomChoice(words.adj.m);
+    const p1 = randomChoice(words.part1);
+    const p2 = randomChoice(words.part2);
+
+    slotAdj.textContent = adj;
+    slotPart1.textContent = p1;
+    slotPart2.textContent = p2;
   }
 
-  // Spin-Effekt: Text mit Glitch animieren (kurz)
-  function glitchEffect(element) {
-    element.classList.add("glitch");
-    setTimeout(() => element.classList.remove("glitch"), 900);
-  }
+  btn.addEventListener("click", generatePobel);
 
-  // Slot-Inhalte setzen mit Glitch
-  function spinSlot(id, text) {
-    const el = document.getElementById(id);
-    el.textContent = text;
-    glitchEffect(el);
-  }
-
-  // Spin-Funktion: 3 Slots
-  async function spin() {
-    // Kurzer Glitch-Scramble Effekt
-    for (let i = 0; i < 6; i++) {
-      const adjRandom = getRandom(words.adj1);
-      const part1Random = getRandom(words.part1);
-      const part2Random = getRandom(words.part2);
-
-      spinSlot("slot1", adjRandom + "...");
-      spinSlot("slot2", part1Random + "-");
-      spinSlot("slot3", part2Random.wort);
-
-      await new Promise(r => setTimeout(r, 70));
-    }
-
-    // Finale Auswahl
-    const adj = getRandom(words.adj1);
-    const part1 = getRandom(words.part1);
-    const part2 = getRandom(words.part2);
-
-    const adjBeugt = beugeAdjektiv(adj, part2.genus);
-
-    spinSlot("slot1", adjBeugt);
-    spinSlot("slot2", part1 + "-");
-    spinSlot("slot3", part2.wort);
-  }
-
-  // Event Listener für Button
-  document.getElementById("spinBtn").addEventListener("click", spin);
-
-  // Initial Fill
-  spin();
+  // Initiale Ausgabe
+  generatePobel();
 </script>
 
 </body>
